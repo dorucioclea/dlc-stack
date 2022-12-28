@@ -60,6 +60,13 @@ pub struct NewContract {
     pub content: String,
 }
 
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateContract {
+    state: Option<String>,
+    content: Option<String>,
+}
+
 pub struct WalletBackendClient {
     client: Client,
     host: String
@@ -244,7 +251,24 @@ impl StorageApiClient {
         }
     }
 
-    pub async fn delete_contract(&self, uuid: String) -> Result<Contract, ApiError> {
+    pub async fn update_contract(&self, uuid: String, contract: UpdateContract) -> Result<(), ApiError> {
+        let uri = format!("{}/contracts/{}", String::as_str(&self.host.clone()), uuid.as_str());
+        let url = Url::parse(uri.as_str()).unwrap();
+        let res = match self.client.put(url).json(&contract).send().await {
+            Ok(result) => result,
+            Err(e) => return Err(ApiError { message: e.to_string(), status: 0 }),
+        };
+        let status = res.status();
+        if status.is_success() {
+            Ok(())
+        } else {
+            let status_clone = status.clone();
+            let msg: String = res.text().await.map_err(|e| ApiError { message: e.to_string(), status: status_clone.as_u16() })?;
+            Err(ApiError { message: msg, status: status_clone.as_u16() })
+        }
+    }
+
+    pub async fn delete_contract(&self, uuid: String) -> Result<(), ApiError> {
         let uri = format!("{}/contracts/{}", String::as_str(&self.host.clone()), uuid.as_str());
         let url = Url::parse(uri.as_str()).unwrap();
         let res = match self.client.delete(url).send().await {
@@ -253,9 +277,7 @@ impl StorageApiClient {
         };
         let status = res.status();
         if status.is_success() {
-            let status_clone = status.clone();
-            let contract: Contract = res.json().await.map_err(|e| ApiError { message: e.to_string(), status: status_clone.as_u16() })?;
-            Ok(contract)
+            Ok(())
         } else {
             let status_clone = status.clone();
             let msg: String = res.text().await.map_err(|e| ApiError { message: e.to_string(), status: status_clone.as_u16() })?;
