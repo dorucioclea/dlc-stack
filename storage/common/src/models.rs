@@ -1,0 +1,26 @@
+use diesel::{AsChangeset, Insertable, Queryable};
+use serde::{Deserialize, Serialize};
+use super::schema::*;
+
+#[derive(Insertable, Serialize, Deserialize, Queryable, Debug)]
+#[diesel(table_name = contracts)]
+pub struct NewContract {
+    pub uuid: String,
+    pub state: String,
+    pub content: String,
+}
+
+#[derive(Serialize, Deserialize, Queryable, Debug)]
+pub struct Contract {
+    pub id: i32,
+    pub uuid: String,
+    pub state: String,
+    pub content: String,
+}
+
+#[derive(Serialize, Deserialize, AsChangeset, Debug)]
+#[diesel(table_name = contracts)]
+pub struct UpdateContract {
+    state: Option<String>,
+    content: Option<String>,
+}

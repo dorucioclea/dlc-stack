@@ -1,0 +1,36 @@
+<html>
+
+<head>
+    <title>test</title>
+</head>
+
+<body>
+    <form id="formElem">
+        <p><label for="">Post accept message</label></p>
+        <textarea id="accepttext" name="accepttext" rows="40" cols="50"></textarea>
+        <br>
+        <input type="submit">
+    </form>
+    <textarea id="signmessage" readonly rows="40" cols="50"></textarea>
+</body>
+<script>
+    formElem.onsubmit = (e) => {
+        e.preventDefault();
+        var form = document.querySelector("#formElem");
+
+        data = form.querySelector('#accepttext').value
+
+        fetch('http://localhost:8085/acceptoffer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Origin': 'http://localhost'
+            },
+            body: data,
+        }).then((response) => response.text()).then((text) => {
+            document.querySelector("#signmessage").innerHTML = text;
+        })
+    };
+</script>
+
+</html>

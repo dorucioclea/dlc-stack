@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:12
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: changeme
+      PGDATA: /data/postgres
+    ports:
+      - "5432:5432"
+#  redis-cluster:
+#    image: grokzen/redis-cluster:latest
+#    ports:
+#      - "6379-6382:6379-6382"
+#    environment:
+#      - "INITIAL_PORT=6379"
+#      - "MASTERS=3"
+#      - "SLAVES_PER_MASTER=1"
+#      - "SENTINEL=false"
+#      - "REDIS_CLUSTER_IP=0.0.0.0"
+#      - "IP=0.0.0.0"
+#      - "BIND_ADDRESS=0.0.0.0"

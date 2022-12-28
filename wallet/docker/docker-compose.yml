@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  wallet-backend:
+    image: "${DOCKER_REGISTRY_PREFIX}prototype-wallet-backend:latest"
+    env_file: .env
+    ports:
+      - "8085:8085"
+    environment:
+      - "RUST_BACKTRACE=1"
+      - "RUST_LOG=debug"
+      - "USE_SLED=$USE_SLED"

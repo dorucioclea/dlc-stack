@@ -1,0 +1,8 @@
+/target
+.DS_STORE
+.idea
+/events
+nohup.out
+.env
+!.env.template
+*.iml

@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    "oracle",
+    "wallet",
+    "clients",
+    "storage/reader",
+    "storage/writer",
+    "storage/common",
+    "storage/api",
+    "it"
+]
