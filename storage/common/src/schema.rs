@@ -8,3 +8,11 @@ table! {
         content -> Text,
     }
 }
+
+table! {
+    events (id) {
+        id -> Int4,
+        event_id -> Varchar,
+        content -> Text,
+    }
+}

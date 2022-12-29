@@ -25,7 +25,7 @@ pub struct ApiResult {
     pub response: Response,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ApiError {
     pub message: String,
     pub status: u16
@@ -43,7 +43,7 @@ impl error::Error for ApiError {
     }
 }
 
-#[derive(serde::Serialize, serde::Deserialize, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Contract {
     pub id: i32,
@@ -52,7 +52,7 @@ pub struct Contract {
     pub content: String,
 }
 
-#[derive(serde::Serialize, serde::Deserialize, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct NewContract {
     pub uuid: String,
@@ -60,11 +60,11 @@ pub struct NewContract {
     pub content: String,
 }
 
-#[derive(serde::Serialize, serde::Deserialize, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateContract {
-    state: Option<String>,
-    content: Option<String>,
+    pub state: Option<String>,
+    pub content: Option<String>,
 }
 
 pub struct WalletBackendClient {
@@ -213,7 +213,26 @@ impl StorageApiClient {
         }
     }
 
-    pub async fn get_contract(&self, uuid: String) -> Result<Contract, ApiError> {
+    pub async fn get_contracts_by_state(&self, state: String) -> Result<Vec<Contract>, ApiError> {
+        let uri = format!("{}/contracts/state/{}", String::as_str(&self.host.clone()), state);
+        let url = Url::parse(uri.as_str()).unwrap();
+        let res = match self.client.get(url).send().await {
+            Ok(result) => result,
+            Err(e) => return Err(ApiError { message: e.to_string(), status: 0 }),
+        };
+        let status = res.status();
+        if status.is_success() {
+            let status_clone = status.clone();
+            let contracts: Vec<Contract> = res.json().await.map_err(|e| ApiError { message: e.to_string(), status: status_clone.as_u16() })?;
+            Ok(contracts)
+        } else {
+            let status_clone = status.clone();
+            let msg: String = res.text().await.map_err(|e| ApiError { message: e.to_string(), status: status_clone.as_u16() })?;
+            Err(ApiError { message: msg, status: status_clone.as_u16() })
+        }
+    }
+
+    pub async fn get_contract(&self, uuid: String) -> Result<Option<Contract>, ApiError> {
         let uri = format!("{}/contracts/{}", String::as_str(&self.host.clone()), uuid.as_str());
         let url = Url::parse(uri.as_str()).unwrap();
         let res = match self.client.get(url).send().await {
@@ -224,7 +243,9 @@ impl StorageApiClient {
         if status.is_success() {
             let status_clone = status.clone();
             let contract: Contract = res.json().await.map_err(|e| ApiError { message: e.to_string(), status: status_clone.as_u16() })?;
-            Ok(contract)
+            Ok(Some(contract))
+        } else if status.clone().as_u16() == 404 {
+            Ok(None)
         } else {
             let status_clone = status.clone();
             let msg: String = res.text().await.map_err(|e| ApiError { message: e.to_string(), status: status_clone.as_u16() })?;

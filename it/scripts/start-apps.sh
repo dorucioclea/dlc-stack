@@ -27,6 +27,8 @@ start_wallet() {
   export RPC_USER="devnet2"
   export RPC_PASS="devnet2"
   export ORACLE_URL=http://localhost:8080
+  export STORAGE_API_ENABLED=true
+  export STORAGE_API_ENDPOINT=http://localhost:8100
   RUST_LOG=debug cargo run --bin $wallet_app > target/$wallet_app.log 2> target/$wallet_app.log &
   echo $! > $wallet_pid_file
   while ! nc -z localhost $wallet_port; do

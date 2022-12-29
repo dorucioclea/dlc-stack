@@ -15,8 +15,12 @@ pub async fn get_contracts(pool: Data<DbPool>) -> impl Responder {
 #[get("/contracts/{uuid}")]
 pub async fn get_contract(pool: Data<DbPool>, uuid: Path<String>) -> impl Responder {
     let mut conn = pool.get().expect("couldn't get db connection from pool");
-    let contract = dlc_storage_reader::get_contract(&mut conn, &uuid.into_inner()).unwrap();
-    HttpResponse::Ok().json(contract)
+    let result = dlc_storage_reader::get_contract(&mut conn, &uuid.into_inner());
+    match result {
+        Ok(contract) => HttpResponse::Ok().json(contract),
+        Err(diesel::result::Error::NotFound) => HttpResponse::NotFound().body("Contract not found"),
+        Err(_) => HttpResponse::InternalServerError().body("Internal server error"),
+    }
 }
 
 #[get("/contracts/state/{state}")]

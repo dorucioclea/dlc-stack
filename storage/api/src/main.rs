@@ -1,6 +1,7 @@
 mod contracts;
-use contracts::{create_contract, delete_contract, get_contracts, get_contract, update_contract};
+mod events;
 
+use contracts::{create_contract, delete_contract, get_contracts, get_contracts_by_state, get_contract, update_contract};
 extern crate log;
 use actix_web::{App, HttpServer};
 use diesel::PgConnection;
@@ -32,6 +33,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(Data::new(pool.clone()))
             .service(get_contracts)
             .service(get_contract)
+            .service(get_contracts_by_state)
             .service(create_contract)
             .service(update_contract)
             .service(delete_contract)
