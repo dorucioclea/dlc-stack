@@ -1,15 +1,17 @@
 mod contracts;
 mod events;
 
-use contracts::{create_contract, delete_contract, get_contracts, get_contracts_by_state, get_contract, update_contract};
+use contracts::*;
+use events::*;
 extern crate log;
-use actix_web::{App, HttpServer};
+use actix_web::{App, error, HttpResponse, HttpServer, web};
 use diesel::PgConnection;
 use diesel::r2d2::{self, ConnectionManager};
 use dotenv::dotenv;
 use std::env;
 use actix_web::web::Data;
 use dlc_storage_writer::apply_migrations;
+use crate::events::get_events;
 
 type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
@@ -31,12 +33,28 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(Data::new(pool.clone()))
+            .app_data(web::JsonConfig::default().error_handler(|err, _req| {
+                          error::InternalError::from_response(
+                                  "",
+                                  HttpResponse::BadRequest()
+                                          .content_type("application/json")
+                                          .body(format!(r#"{{"error":"{}"}}"#, err)),
+                              )
+                              .into()
+                          }))
             .service(get_contracts)
             .service(get_contract)
             .service(get_contracts_by_state)
             .service(create_contract)
             .service(update_contract)
             .service(delete_contract)
+            .service(delete_contracts)
+            .service(get_events)
+            .service(get_event)
+            .service(create_event)
+            .service(update_event)
+            .service(delete_event)
+            .service(delete_events)
     })
         .bind("127.0.0.1:8100")?
         .run()

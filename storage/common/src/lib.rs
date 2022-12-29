@@ -52,10 +52,59 @@ pub fn delete_contract(conn: &mut PgConnection, cuuid: &str) -> Result<usize, di
     Ok(num_deleted)
 }
 
+pub fn delete_all_contracts(conn: &mut PgConnection) -> Result<usize, diesel::result::Error> {
+    use crate::schema::contracts::dsl::*;
+    let num_deleted = diesel::delete(contracts).execute(conn)?;
+    Ok(num_deleted)
+}
+
 pub fn update_contract(conn: &mut PgConnection, cuuid: &str, contract: UpdateContract) -> Result<usize, diesel::result::Error> {
     use crate::schema::contracts::dsl::*;
     let num_updated = diesel::update(contracts.filter(uuid.eq(cuuid)))
         .set(&contract)
         .execute(conn)?;
     Ok(num_updated)
+}
+
+pub fn create_event(conn: &mut PgConnection, event: NewEvent) -> Result<Event, diesel::result::Error> {
+    use crate::schema::events::dsl::*;
+    let result = diesel::insert_into(events)
+        .values(&event)
+        .get_result(conn)?;
+    Ok(result)
+}
+
+pub fn update_event(conn: &mut PgConnection, eid: &str, event: UpdateEvent) -> Result<usize, diesel::result::Error> {
+    use crate::schema::events::dsl::*;
+    let num_updated = diesel::update(events.filter(event_id.eq(eid)))
+        .set(&event)
+        .execute(conn)?;
+    Ok(num_updated)
+}
+
+pub fn get_event(conn: &mut PgConnection, eid: &str) -> Result<Event, diesel::result::Error> {
+    use crate::schema::events::dsl::*;
+    let result = events
+        .filter(event_id.eq(eid))
+        .first(conn)?;
+    Ok(result)
+}
+
+pub fn get_all_events(conn: &mut PgConnection) -> Result<Vec<Event>, diesel::result::Error> {
+    use crate::schema::events::dsl::*;
+    let results = events.load::<Event>(conn)?;
+    Ok(results)
+}
+
+pub fn delete_event(conn: &mut PgConnection, eid: &str) -> Result<usize, diesel::result::Error> {
+    use crate::schema::events::dsl::*;
+    let num_deleted = diesel::delete(events.filter(event_id.eq(eid)))
+        .execute(conn)?;
+    Ok(num_deleted)
+}
+
+pub fn delete_all_events(conn: &mut PgConnection) -> Result<usize, diesel::result::Error> {
+    use crate::schema::events::dsl::*;
+    let num_deleted = diesel::delete(events).execute(conn)?;
+    Ok(num_deleted)
 }

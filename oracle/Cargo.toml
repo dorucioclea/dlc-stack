@@ -11,8 +11,10 @@ path = "src/main.rs"
 
 [dependencies]
 actix-web = "4.0.1"
+#actix-rt = "2.7.0"
 anyhow = "1.0.57"
 async-trait = "0.1.53"
+base64 = "0.13.1"
 chrono = "0.4"
 clap = { version = "3.2.5", features = ["derive"] }
 clokwerk = "0.4.0-rc1"
@@ -40,6 +42,7 @@ thiserror = "1.0.31"
 time = { version = "0.3.9", features = ["formatting", "serde-human-readable"] }
 tokio = { version = "1.18.2", features = ["full"] }
 vaultrs = { version = "0.6.2", default-features = true }
+dlc-clients = { path = "../clients" }
 
 [dev-dependencies]
 dlc = "0.3.0"

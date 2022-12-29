@@ -282,7 +282,13 @@ async fn create_event(
 
     let new_event = serde_json::to_string(&db_value)?.into_bytes();
     info!("Inserting new event ...[uuid: {}]", uuid.clone());
-    if oracle.event_handler.use_redis {
+    if oracle.event_handler.storage_api.is_some() {
+        oracle
+            .event_handler.storage_api.as_ref().unwrap()
+            .insert(uuid.clone(), new_event.clone())
+            .await
+            .unwrap();
+    } else if oracle.event_handler.use_redis {
         oracle
             .event_handler.redis.as_ref().unwrap()
             .insert(uuid.clone(), new_event.clone())
@@ -319,7 +325,18 @@ async fn attest(
 
     info!("retrieving oracle event with maturation {}", path);
     let mut event: DbValue;
-    if oracle.event_handler.use_redis {
+    if oracle.event_handler.storage_api.is_some() {
+        let event_vec = match oracle
+            .event_handler.storage_api.as_ref().unwrap()
+            .get(uuid.clone())
+            .await
+            .map_err(SibylsError::OracleDatabaseError)?
+        {
+            Some(val) => val,
+            None => return Err(SibylsError::OracleEventNotFoundError(uuid).into()),
+        };
+        event = serde_json::from_str(&String::from_utf8_lossy(&event_vec)).unwrap();
+    } else if oracle.event_handler.use_redis {
         let event_vec = match oracle
             .event_handler.redis.as_ref().unwrap()
             .get(uuid.clone())
@@ -384,7 +401,17 @@ async fn attest(
 
     let new_event = serde_json::to_string(&event)?.into_bytes();
 
-    if oracle.event_handler.use_redis {
+    if oracle.event_handler.storage_api.is_some() {
+        let _insert_event = match oracle
+            .event_handler.storage_api.as_ref().unwrap()
+            .insert(path.clone(), new_event.clone())
+            .await
+            .map_err(SibylsError::OracleDatabaseError)?
+        {
+            Some(val) => val,
+            None => return Err(SibylsError::OracleEventNotFoundError(uuid).into()),
+        };
+    } else if oracle.event_handler.use_redis {
         let _insert_event = match oracle
             .event_handler.redis.as_ref().unwrap()
             .insert(path.clone(), new_event.clone())
@@ -403,7 +430,6 @@ async fn attest(
             None => return Err(SibylsError::OracleEventNotFoundError(uuid).into()),
         };
     }
-
     Ok(HttpResponse::Ok().json(parse_database_entry(new_event.into())))
 }
 
@@ -422,8 +448,15 @@ async fn announcements(
         info!("no oracle events found");
         return Ok(HttpResponse::Ok().json(Vec::<ApiOracleEvent>::new()));
     }
-
-    if oracle.event_handler.use_redis {
+    if oracle.event_handler.storage_api.is_some() {
+        return Ok(HttpResponse::Ok().json(
+         oracle
+             .event_handler.storage_api.as_ref().unwrap()
+             .get_all().await.unwrap().unwrap().iter()
+             .map(|result| parse_database_entry(result.clone().1.into()))
+             .collect::<Vec<_>>()
+        ));
+    } else if oracle.event_handler.use_redis {
         return Ok(HttpResponse::Ok().json(
             oracle
                 .event_handler.redis.as_ref().unwrap()
@@ -462,7 +495,17 @@ async fn get_announcement(
     }
 
     info!("retrieving oracle event with uuid {}", uuid);
-    if oracle.event_handler.use_redis {
+    if oracle.event_handler.storage_api.is_some() {
+        let event = match oracle
+            .event_handler.storage_api.as_ref().unwrap()
+            .get(uuid.clone()).await
+            .map_err(SibylsError::OracleDatabaseError)?
+        {
+            Some(val) => val,
+            None => return Err(SibylsError::OracleEventNotFoundError(path.to_string()).into()),
+        };
+        Ok(HttpResponse::Ok().json(parse_database_entry(event.into())))
+    } else if oracle.event_handler.use_redis {
         let event = match oracle
             .event_handler.redis.as_ref().unwrap()
             .get(uuid.clone())

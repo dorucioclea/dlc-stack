@@ -13,6 +13,8 @@ start_storage() {
 }
 
 start_oracle() {
+  export STORAGE_API_ENABLED=true
+  export STORAGE_API_ENDPOINT=http://localhost:8100
   RUST_LOG=debug cargo run --bin $oracle_app > target/$oracle_app.log 2> target/$oracle_app.log &
   echo $! > $oracle_pid_file
   while ! nc -z localhost $oracle_port; do

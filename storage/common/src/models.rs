@@ -24,3 +24,23 @@ pub struct UpdateContract {
     state: Option<String>,
     content: Option<String>,
 }
+
+#[derive(Insertable, Serialize, Deserialize, Queryable, Debug)]
+#[diesel(table_name = events)]
+pub struct NewEvent {
+    pub event_id: String,
+    pub content: String,
+}
+
+#[derive(Serialize, Deserialize, Queryable, Debug)]
+pub struct Event {
+    pub id: i32,
+    pub event_id: String,
+    pub content: String,
+}
+
+#[derive(Serialize, Deserialize, AsChangeset, Debug)]
+#[diesel(table_name = events)]
+pub struct UpdateEvent {
+    content: Option<String>,
+}

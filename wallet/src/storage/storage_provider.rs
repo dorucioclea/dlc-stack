@@ -47,7 +47,7 @@ impl StorageProvider {
 
     pub fn delete_contracts(&self) {
         if self.storage_api.is_some() {
-            // TODO
+            let _res = self.runtime.block_on(self.storage_api.as_ref().unwrap().delete_contracts());
         } else if self.sled_storage.is_some() {
             // TODO
         } else {

@@ -50,3 +50,10 @@ pub async fn delete_contract(pool: Data<DbPool>, uuid: Path<String>) -> impl Res
     let num_deleted = dlc_storage_writer::delete_contract(&mut conn, &uuid.into_inner()).unwrap();
     HttpResponse::Ok().json(num_deleted)
 }
+
+#[delete("/contracts")]
+pub async fn delete_contracts(pool: Data<DbPool>) -> impl Responder {
+    let mut conn = pool.get().expect("couldn't get db connection from pool");
+    let num_deleted = dlc_storage_writer::delete_contracts(&mut conn).unwrap();
+    HttpResponse::Ok().json(num_deleted)
+}
