@@ -20,3 +20,6 @@ start-apps:
 
 stop-apps:
 	./it/scripts/stop-apps.sh
+
+docker-build:
+	docker build -t dlc-link-stack:latest -f docker/Dockerfile .
