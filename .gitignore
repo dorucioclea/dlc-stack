@@ -11,3 +11,4 @@
 **/*.rs.bk
 /events
 /contracts_db
+.vscode

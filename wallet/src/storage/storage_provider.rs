@@ -81,8 +81,8 @@ impl Storage for StorageProvider {
     
     fn get_contract(&self, id: &ContractId) -> Result<Option<Contract>, Error> {
         if self.storage_api.is_some() {
-            let cid = std::str::from_utf8(id).unwrap();
-            let contract_res : Result<Option<dlc_clients::Contract>, ApiError> = self.runtime.block_on(self.storage_api.as_ref().unwrap().get_contract(cid.to_string()));
+            let cid = String::from_utf8(id.to_vec()).unwrap();
+            let contract_res : Result<Option<dlc_clients::Contract>, ApiError> = self.runtime.block_on(self.storage_api.as_ref().unwrap().get_contract(cid.clone()));
             let unw_contract = contract_res.unwrap();
             if unw_contract.is_some() {
                 let bytes = base64::decode(unw_contract.unwrap().content).unwrap();
@@ -123,8 +123,8 @@ impl Storage for StorageProvider {
     fn create_contract(&mut self, contract: &OfferedContract) -> Result<(), Error> {
         if self.storage_api.is_some() {
             let data = serialize_contract(&Contract::Offered(contract.clone()))?;
-            let uuid = std::str::from_utf8(&contract.id).unwrap();
-            let req = NewContract{uuid: uuid.to_string(), state: "offered".to_string(), content: base64::encode(&data)};
+            let uuid = String::from_utf8(contract.id.to_vec()).unwrap();
+            let req = NewContract{uuid: uuid.clone(), state: "offered".to_string(), content: base64::encode(&data)};
             let _result = self.runtime.block_on(self.storage_api.as_mut().unwrap().create_contract(req));
             Ok(())
         } else if self.sled_storage.is_some() {
@@ -136,8 +136,8 @@ impl Storage for StorageProvider {
 
     fn delete_contract(&mut self, id: &ContractId) -> Result<(), Error> {
         if self.storage_api.is_some() {
-            let cid = std::str::from_utf8(id).unwrap();
-            let _result = self.runtime.block_on(self.storage_api.as_mut().unwrap().delete_contract(cid.to_string()));
+            let cid = String::from_utf8(id.to_vec()).unwrap();
+            let _result = self.runtime.block_on(self.storage_api.as_mut().unwrap().delete_contract(cid.clone()));
             Ok(())
         } else if self.sled_storage.is_some() {
             self.sled_storage.as_mut().unwrap().delete_contract(id)
@@ -149,7 +149,7 @@ impl Storage for StorageProvider {
     fn update_contract(&mut self, contract: &Contract) -> Result<(), Error> {
         if self.storage_api.is_some() {
             let c_id = contract.get_id();
-            let cid = std::str::from_utf8(&c_id).unwrap();
+            let cid = String::from_utf8(c_id.to_vec()).unwrap();
             let contract_id : String = cid.to_string();
             let curr_state = get_contract_state_str(contract);
             match contract {

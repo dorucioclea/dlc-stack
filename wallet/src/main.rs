@@ -52,7 +52,16 @@ const COUNTER_PARTY_PK: &str = "02fc8e97419286cf05e5d133f41ff6d51f691dda039e9dc0
 #[serde(rename_all = "camelCase")]
 struct ErrorResponse {
     message: String,
- }
+    code: Option<u64>
+}
+
+#[derive(Serialize)]
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ErrorsResponse {
+    errors: Vec<ErrorResponse>,
+    status: u64,
+}
 
 fn main() {
     env_logger::init();
@@ -147,7 +156,7 @@ fn main() {
                     let accept_dlc: AcceptDlc = match serde_json::from_str(&json.accept_message)
                     {
                         Ok(dlc) => dlc,
-                        Err(e) => return add_access_control_headers(Response::html(e.to_string())),
+                        Err(e) => return add_access_control_headers(Response::json(&ErrorsResponse{status: 400, errors: vec![ErrorResponse{message: e.to_string(), code: None}]}).with_status_code(400)),
                     };
                     accept_offer(accept_dlc, manager.clone())
                 },
@@ -271,16 +280,16 @@ fn create_new_offer(
     let (_event_descriptor, descriptor) =
         get_numerical_contract_info(accept_collateral, offer_collateral, total_outcomes);
     let announcement_res = oracle.get_announcement(&event_id);
-
+    info!("Creating new offer with event id: {}, accept collateral: {}, offer_collateral: {}", event_id.clone(), accept_collateral, offer_collateral);
     let maturity = match announcement_res {
         Ok(a) => a.oracle_event.event_maturity_epoch,
-        Err(_e) => return Response::html("OracleEventNotFoundError"),
+        Err(_e) => return Response::json(&ErrorsResponse{status: 400, errors: vec![ErrorResponse{message: "OracleEventNotFoundError".to_string(), code: None}]}).with_status_code(400),
     };
 
     let contract_info = ContractInputInfo {
         oracles: OracleInput {
             public_keys: vec![oracle.get_public_key()],
-            event_id,
+            event_id: event_id.clone(),
             threshold: 1,
         },
         contract_descriptor: descriptor,
@@ -305,7 +314,7 @@ fn create_new_offer(
         Ok(dlc) => Response::json(dlc),
         Err(e) => {
             info!("DLC manager - send offer error: {}", e.to_string());
-            Response::json(&ErrorResponse{message: e.to_string()}).with_status_code(400)
+            Response::json(&ErrorsResponse{status: 400, errors: vec![ErrorResponse{message: e.to_string(), code: None}]}).with_status_code(400)
         },
     }
 }
@@ -324,7 +333,7 @@ fn accept_offer(accept_dlc: AcceptDlc, manager: Arc<Mutex<DlcManager>>) -> Respo
         Ok(dlc) => dlc,
         Err(e) => {
             info!("DLC manager - accept offer error: {}", e.to_string());
-            return add_access_control_headers(Response::json(&ErrorResponse{message: e.to_string()}).with_status_code(400))
+            return add_access_control_headers(Response::json(&ErrorsResponse{status: 400, errors: vec![ErrorResponse{message: e.to_string(), code: None}]}).with_status_code(400))
         },
     } {
         add_access_control_headers(Response::json(&sign))
