@@ -4,3 +4,4 @@
 !.env.template
 .idea
 /contracts_db
+.vscode

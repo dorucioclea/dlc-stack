@@ -1,0 +1,58 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'sibyls'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=sibyls",
+                    "--package=sibyls"
+                ],
+                "filter": {
+                    "name": "sibyls",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "RUST_LOG": "info",
+                "STORAGE_API_ENABLED": "true",
+                "STORAGE_API_ENDPOINT": "http://localhost:8100"
+            }
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'dlc-link-backend'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=dlc-link-backend",
+                    "--package=dlc-link-backend"
+                ],
+                "filter": {
+                    "name": "dlc-link-backend",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "env": {
+                "RUST_LOG": "info",
+                "BTC_RPC_URL": "electrs-btc2.dlc.link:18443/wallet/alice",
+                "RPC_USER": "devnet2",
+                "RPC_PASS": "devnet2",
+                "ORACLE_URL": "http://localhost:8080",
+                "STORAGE_API_ENABLED": "true",
+                "STORAGE_API_ENDPOINT": "http://localhost:8100"
+            },
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

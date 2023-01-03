@@ -34,11 +34,17 @@ async fn wallet_accept_message(world: &mut DlcLinkWorld, accept_message: String)
 
 #[when(expr="creating an offer request with uuid {word}, accept_collateral: {u64} and offer_collateral: {u64}")]
 async fn create_offer(world: &mut DlcLinkWorld, uuid: String, accept_collateral: CustomU64, offer_collateral: CustomU64) {
+    //{
+    //    "uuid": "0xfdc34ee06024ad476e18fff8a80faa5d14dc427cfff3131642c77eaff6bc1d9a",
+    //    "acceptCollateral": 100000000,
+    //    "offerCollateral": 10000,
+    //    "totalOutcomes": 1
+    //}
     let offer_request = OfferRequest {
         uuid: uuid.to_string(),
         accept_collateral: *accept_collateral,
         offer_collateral: *offer_collateral,
-        total_outcomes: 2,
+        total_outcomes: 1,
     };
     let res = world.wallet_client.post_offer_and_accept(offer_request);
     world.collected_responses.push(res.await.unwrap());

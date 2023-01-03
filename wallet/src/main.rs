@@ -25,7 +25,7 @@ use log::{info, warn};
 
 use oracle_client::P2PDOracleClient;
 use rouille::Response;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 use utils::get_numerical_contract_info;
 use crate::storage::storage_provider::StorageProvider;
@@ -46,6 +46,13 @@ type DlcManager<'a> = Manager<
 
 const NUM_CONFIRMATIONS: u32 = 2;
 const COUNTER_PARTY_PK: &str = "02fc8e97419286cf05e5d133f41ff6d51f691dda039e9dc007245a421e2c7ec61c";
+
+#[derive(Serialize)]
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct ErrorResponse {
+    message: String,
+ }
 
 fn main() {
     env_logger::init();
@@ -296,7 +303,10 @@ fn create_new_offer(
         .send_offer(&contract_input, COUNTER_PARTY_PK.parse().unwrap())
     {
         Ok(dlc) => Response::json(dlc),
-        Err(e) => Response::html(e.to_string()),
+        Err(e) => {
+            info!("DLC manager - send offer error: {}", e.to_string());
+            Response::json(&ErrorResponse{message: e.to_string()}).with_status_code(400)
+        },
     }
 }
 
@@ -312,7 +322,10 @@ fn accept_offer(accept_dlc: AcceptDlc, manager: Arc<Mutex<DlcManager>>) -> Respo
             COUNTER_PARTY_PK.parse().unwrap(),
         ) {
         Ok(dlc) => dlc,
-        Err(e) => return add_access_control_headers(Response::html(e.to_string())),
+        Err(e) => {
+            info!("DLC manager - accept offer error: {}", e.to_string());
+            return add_access_control_headers(Response::json(&ErrorResponse{message: e.to_string()}).with_status_code(400))
+        },
     } {
         add_access_control_headers(Response::json(&sign))
     } else {
