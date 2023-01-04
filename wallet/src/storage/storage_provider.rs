@@ -81,7 +81,8 @@ impl Storage for StorageProvider {
     
     fn get_contract(&self, id: &ContractId) -> Result<Option<Contract>, Error> {
         if self.storage_api.is_some() {
-            let cid = String::from_utf8(id.to_vec()).unwrap();
+            let bytes = id.to_vec();
+            let cid = base64::encode(&bytes);
             let contract_res : Result<Option<dlc_clients::Contract>, ApiError> = self.runtime.block_on(self.storage_api.as_ref().unwrap().get_contract(cid.clone()));
             let unw_contract = contract_res.unwrap();
             if unw_contract.is_some() {
@@ -123,7 +124,8 @@ impl Storage for StorageProvider {
     fn create_contract(&mut self, contract: &OfferedContract) -> Result<(), Error> {
         if self.storage_api.is_some() {
             let data = serialize_contract(&Contract::Offered(contract.clone()))?;
-            let uuid = String::from_utf8(contract.id.to_vec()).unwrap();
+            let bytes = contract.id.to_vec();
+            let uuid = base64::encode(&bytes);
             let req = NewContract{uuid: uuid.clone(), state: "offered".to_string(), content: base64::encode(&data)};
             let _result = self.runtime.block_on(self.storage_api.as_mut().unwrap().create_contract(req));
             Ok(())
@@ -136,7 +138,8 @@ impl Storage for StorageProvider {
 
     fn delete_contract(&mut self, id: &ContractId) -> Result<(), Error> {
         if self.storage_api.is_some() {
-            let cid = String::from_utf8(id.to_vec()).unwrap();
+            let bytes = id.to_vec();
+            let cid = base64::encode(&bytes);
             let _result = self.runtime.block_on(self.storage_api.as_mut().unwrap().delete_contract(cid.clone()));
             Ok(())
         } else if self.sled_storage.is_some() {
@@ -149,8 +152,8 @@ impl Storage for StorageProvider {
     fn update_contract(&mut self, contract: &Contract) -> Result<(), Error> {
         if self.storage_api.is_some() {
             let c_id = contract.get_id();
-            let cid = String::from_utf8(c_id.to_vec()).unwrap();
-            let contract_id : String = cid.to_string();
+            let bytes = c_id.to_vec();
+            let contract_id : String = base64::encode(&bytes);
             let curr_state = get_contract_state_str(contract);
             match contract {
                 a @ Contract::Accepted(_) | a @ Contract::Signed(_) => {
