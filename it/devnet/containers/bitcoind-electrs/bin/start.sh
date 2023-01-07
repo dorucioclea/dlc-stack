@@ -1,4 +1,6 @@
 #!/bin/sh
+mkdir -p /root/.bitcoin
+cp bitcoin/conf/bitcoin.conf /root/.bitcoin/bitcoin.conf
 nohup bitcoin/bin/bitcoind -regtest >/dev/stdout 2>&1 &
 sleep 5
 bitcoin/bin/bitcoin-cli -regtest createwallet "alice"

@@ -10,6 +10,6 @@ RUN wget -nv https://dlc-public-assets.s3.amazonaws.com/releases/electrs/electrs
 RUN tar -xzf electrs-${ELECTRS_VERSION}.tar.gz
 RUN chmod +x electrs
 RUN mv electrs /usr/bin/electrs
-ADD containers/bitcoind-electrs/conf/bitcoind.conf bitcoin/conf/bitcoind.conf
+ADD containers/bitcoind-electrs/conf/bitcoin.conf bitcoin/conf/bitcoin.conf
 ADD containers/bitcoind-electrs/bin/start.sh start.sh
 RUN chmod +x start.sh
