@@ -1,6 +1,5 @@
 use displaydoc::Display;
 use thiserror::Error;
-use redis::RedisError;
 use dlc_clients::ApiError;
 
 pub type Result<T> = std::result::Result<T, OracleError>;
@@ -12,9 +11,6 @@ pub enum OracleError {
 
     /// database error: {0}
     DatabaseError(#[from] sled::Error),
-
-    /// redis error: {0}
-    RedisError(#[from] RedisError),
 
     /// storage api error: {0}
     StorageApiError(#[from] ApiError),

@@ -288,11 +288,6 @@ async fn create_event(
             .insert(uuid.clone(), new_event.clone())
             .await
             .unwrap();
-    } else if oracle.event_handler.use_redis {
-        oracle
-            .event_handler.redis.as_ref().unwrap()
-            .insert(uuid.clone(), new_event.clone())
-            .unwrap();
     } else {
         oracle
             .event_handler.sled_db.as_ref().unwrap()
@@ -330,16 +325,6 @@ async fn attest(
             .event_handler.storage_api.as_ref().unwrap()
             .get(uuid.clone())
             .await
-            .map_err(SibylsError::OracleDatabaseError)?
-        {
-            Some(val) => val,
-            None => return Err(SibylsError::OracleEventNotFoundError(uuid).into()),
-        };
-        event = serde_json::from_str(&String::from_utf8_lossy(&event_vec)).unwrap();
-    } else if oracle.event_handler.use_redis {
-        let event_vec = match oracle
-            .event_handler.redis.as_ref().unwrap()
-            .get(uuid.clone())
             .map_err(SibylsError::OracleDatabaseError)?
         {
             Some(val) => val,
@@ -411,15 +396,6 @@ async fn attest(
             Some(val) => val,
             None => return Err(SibylsError::OracleEventNotFoundError(uuid).into()),
         };
-    } else if oracle.event_handler.use_redis {
-        let _insert_event = match oracle
-            .event_handler.redis.as_ref().unwrap()
-            .insert(path.clone(), new_event.clone())
-            .map_err(SibylsError::OracleDatabaseError)?
-        {
-            Some(val) => val,
-            None => return Err(SibylsError::OracleEventNotFoundError(uuid).into()),
-        };
     } else {
         let _insert_event = match oracle
             .event_handler.sled_db.as_ref().unwrap()
@@ -456,14 +432,6 @@ async fn announcements(
              .map(|result| parse_database_entry(result.clone().1.into()))
              .collect::<Vec<_>>()
         ));
-    } else if oracle.event_handler.use_redis {
-        return Ok(HttpResponse::Ok().json(
-            oracle
-                .event_handler.redis.as_ref().unwrap()
-                .get_all().unwrap().unwrap().iter()
-                .map(|result| parse_database_entry(result.clone().1.into()))
-                .collect::<Vec<_>>()
-        ));
     } else {
         return Ok(HttpResponse::Ok().json(
             oracle
@@ -499,16 +467,6 @@ async fn get_announcement(
         let event = match oracle
             .event_handler.storage_api.as_ref().unwrap()
             .get(uuid.clone()).await
-            .map_err(SibylsError::OracleDatabaseError)?
-        {
-            Some(val) => val,
-            None => return Err(SibylsError::OracleEventNotFoundError(path.to_string()).into()),
-        };
-        Ok(HttpResponse::Ok().json(parse_database_entry(event.into())))
-    } else if oracle.event_handler.use_redis {
-        let event = match oracle
-            .event_handler.redis.as_ref().unwrap()
-            .get(uuid.clone())
             .map_err(SibylsError::OracleDatabaseError)?
         {
             Some(val) => val,
