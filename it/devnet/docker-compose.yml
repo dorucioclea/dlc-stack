@@ -1,0 +1,15 @@
+version: '3'
+services:
+  bitcoind-electrs:
+    build:
+      context: .
+      dockerfile: containers/bitcoind-electrs/Dockerfile
+      platforms:
+        - "linux/amd64"
+    command: "./start.sh"
+    volumes:
+      - .bitcoin:/root/.bitcoin
+networks: 
+  default: 
+    external: 
+      name: DLC-Stacks.devnet
