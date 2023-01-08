@@ -1,7 +1,7 @@
 /target
 .DS_STORE
 .idea
-/events
+/events_db*
 nohup.out
 .env
 !.env.template

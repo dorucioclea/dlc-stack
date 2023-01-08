@@ -45,8 +45,11 @@ pub async fn get_or_generate_keypair(secp: &Secp256k1<All>, secret_key_file: Opt
 }
 
 async fn get_or_generate_secret_from_vault(secp: &Secp256k1<All>) -> anyhow::Result<SecretKey> {
-    let hostname = gethostname();
-    let oracle_key = format!("oracle/{}", hostname.to_string_lossy());
+    let vault_data_path: String = env::var("VAULT_DATA_PATH").unwrap_or("".to_string());
+    let oracle_key = match vault_data_path.is_empty() {
+        true => format!("oracle/{}", gethostname().to_string_lossy()),
+        false => format!("oracle/{}", vault_data_path),
+    };
     let secret_mount = "secret";
     let vault_key: OraclePrivateKey = match get_secret_key(&oracle_key, secret_mount).await {
         Ok(res) => res,

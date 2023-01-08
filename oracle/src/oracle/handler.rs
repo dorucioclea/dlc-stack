@@ -1,5 +1,4 @@
 extern crate base64;
-use config::Config as Conf;
 use log::info;
 use sled::{Config, Db};
 use std::{
@@ -20,7 +19,7 @@ pub struct EventHandler {
 }
 
 impl  EventHandler {
-    pub fn new(_config: Conf) -> Self {
+    pub fn new() -> Self {
         let sled;
         let storage_api_conn;
         let use_storage_api: bool = env::var("STORAGE_API_ENABLED")
@@ -33,7 +32,11 @@ impl  EventHandler {
             let storage_api_client = StorageApiClient::new(storage_api_endpoint);
             storage_api_conn = Some(StorageApiConn::new(storage_api_client));
         } else {
-            let path = "events";
+            let oracle_events_db_path: String = env::var("ORACLE_EVENTS_DB_PATH").unwrap_or("".to_string());
+            let path = match oracle_events_db_path.is_empty() {
+                true => "events_db",
+                false => &oracle_events_db_path,
+            };
             info!("creating sled event database at {}", path);
             sled = Some(Config::new()
                 .path(path)

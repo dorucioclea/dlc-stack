@@ -3,7 +3,6 @@ use secp256k1_zkp::All;
 use secp256k1_zkp::KeyPair;
 use secp256k1_zkp::Secp256k1;
 use serde::{Deserialize, Serialize};
-use config::Config;
 
 mod error;
 mod handler;
@@ -42,17 +41,7 @@ impl Oracle {
                 oracle_config.announcement_offset,
             ));
         }
-
-        // todo: use this config lib
-        let config = Config::builder()
-            .set_default("REDIS_ENABLED", false).unwrap()
-            .add_source(
-                config::Environment::with_prefix("ORACLE")
-                    .try_parsing(true)
-                    .separator("_")
-                    .list_separator(" "),
-            ).build().unwrap();
-        let event_handler = EventHandler::new(config);
+        let event_handler = EventHandler::new();
 
         Ok(Oracle {
             oracle_config,
