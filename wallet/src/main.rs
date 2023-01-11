@@ -153,6 +153,7 @@ fn main() {
                         accept_message: String,
                     }
                     let json: AcceptOfferRequest = try_or_400!(rouille::input::json_input(request));
+                    info!("Accept message: {}", json.accept_message.clone());
                     let accept_dlc: AcceptDlc = match serde_json::from_str(&json.accept_message)
                     {
                         Ok(dlc) => dlc,
