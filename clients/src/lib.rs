@@ -188,6 +188,39 @@ impl OracleBackendClient {
         };
         Ok(result)
     }
+
+    pub async fn get_public_key(&self) -> Result<String, ApiError> {
+        let uri = format!("{}/v1/publickey", String::as_str(&self.host.clone()));
+        let url = Url::parse(uri.as_str()).unwrap();
+        let res = match self.client.get(url).send().await {
+            Ok(result) => result,
+            Err(e) => {
+                return Err(ApiError {
+                    message: e.to_string(),
+                    status: 0,
+                })
+            }
+        };
+        let status = res.status();
+        if status.is_success() {
+            let status_clone = status.clone();
+            let key_resp: String = res.text().await.map_err(|e| ApiError {
+                message: e.to_string(),
+                status: status_clone.as_u16(),
+            })?;
+            Ok(key_resp)
+        } else {
+            let status_clone = status.clone();
+            let msg: String = res.text().await.map_err(|e| ApiError {
+                message: e.to_string(),
+                status: status_clone.as_u16(),
+            })?;
+            Err(ApiError {
+                message: msg,
+                status: status_clone.as_u16(),
+            })
+        }
+    }
 }
 
 #[derive(Clone)]

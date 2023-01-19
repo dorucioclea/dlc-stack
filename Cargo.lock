@@ -2212,6 +2212,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "oracle-discovery"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "config",
+ "dlc-clients",
+ "env_logger",
+ "log",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "ordered-multimap"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"

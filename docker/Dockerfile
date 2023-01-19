@@ -10,5 +10,6 @@ RUN apt-get update && apt-get install -y openssl libpq-dev && apt-get clean
 COPY --from=build /app/dlc-stack/target/release/sibyls /app/sibyls
 COPY --from=build /app/dlc-stack/target/release/storage-api /app/storage-api
 COPY --from=build /app/dlc-stack/target/release/dlc-link-backend /app/dlc-link-backend
+COPY --from=build /app/dlc-stack/target/release/oracle-discovery /app/oracle-discovery
 WORKDIR /app
 ENTRYPOINT ["/app/sibyls"]

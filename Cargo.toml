@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "oracle",
+    "oracle-discovery",
     "wallet",
     "clients",
     "storage/reader",
