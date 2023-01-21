@@ -2,6 +2,7 @@ use actix_web::web::{Data, Json};
 use actix_web::{get, post, put, HttpResponse, Responder};
 use dlc_clients::OracleBackendClient;
 use log::{error, info};
+use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, Mutex};
@@ -21,9 +22,17 @@ pub struct OracleInput {
     url: String,
 }
 
+#[get("/ping")]
+pub async fn ping() -> impl Responder {
+    HttpResponse::Ok().body("pong")
+}
+
 #[get("/oracles")]
-pub async fn get_oracles(oracles: Data<Oracles>) -> impl Responder {
-    HttpResponse::Ok().json(convert_oracles(&oracles))
+pub async fn get_oracles(
+    oracles: Data<Oracles>,
+    url_replace_rules: Data<HashMap<String, String>>,
+) -> impl Responder {
+    HttpResponse::Ok().json(convert_oracles(&oracles, &url_replace_rules))
 }
 
 #[get("/unverified_oracles")]
@@ -73,7 +82,7 @@ pub async fn verify_oracle(
             oracles.insert(key.clone(), verified_oracle);
             let mut unverified_oracles = unverified_oracles.lock().unwrap();
             unverified_oracles.remove(&url);
-            HttpResponse::Created()
+            HttpResponse::Accepted()
         }
         Err(err) => {
             error!("Error while calling get_public_key {:?}", err);
@@ -82,13 +91,26 @@ pub async fn verify_oracle(
     }
 }
 
-fn convert_oracles(oracles: &Oracles) -> Vec<Oracle> {
+fn convert_oracles(oracles: &Oracles, replace_rules: &HashMap<String, String>) -> Vec<Oracle> {
     let oracles = oracles.lock().unwrap();
-    oracles
-        .values()
-        .map(|oracle| Oracle {
-            public_key: oracle.public_key.replace("\"", ""),
-            url: oracle.url.clone(),
+    let oracles_vec: Vec<&Oracle> = oracles.values().collect();
+    oracles_vec
+        .into_par_iter()
+        .map(|oracle| {
+            let mut oracle = oracle.clone();
+            let url_to_check = &oracle.url;
+            for (match_string, replacement) in replace_rules {
+                if url_to_check.contains(match_string) {
+                    let parts: Vec<&str> = replacement.split(":").collect();
+                    let new_url = format!("{}:{}", parts[0], parts[1]);
+                    oracle.url = new_url;
+                    break;
+                }
+            }
+            Oracle {
+                public_key: oracle.public_key.replace("\"", ""),
+                url: oracle.url,
+            }
         })
         .collect()
 }
