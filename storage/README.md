@@ -1,39 +1,16 @@
 # dlc-storage
 
-The `dlc-storage` project is a Rust framework for providing storage operations for DLC (downloadable content) related components.
+The `dlc-storage` project is a Rust framework for providing storage operations for the oracle / wallet.
 
-## Installation
+## TODOs
 
-To install `dlc-storage`, you can add it as a dependency to your `Cargo.toml` file:
-
-```ini
-[dependencies]
-dlc-storage = "0.1.0"
-```
-
-Then, you can run `cargo build` to download and build the crate.
-
-## Usage
-
-To use `dlc-storage` in your Rust project, you will need to import it and create an instance of the `Storage` struct:
-
-```rust
-extern crate dlc-storage;
-
-use dlc-storage::Storage;
-
-let storage = Storage::new();
-```
-
-You can then use the `storage` instance to perform storage operations, such as saving and retrieving data from the storage backend.
-
-## Dependencies
-
-The `dlc-storage` project has the following dependencies:
-
-- [Rust](https://www.rust-lang.org/) >= 1.45.0
-- [Cargo](https://doc.rust-lang.org/cargo/) >= 1.0.0
+- It has one API, but would be wise to separate the reader and writer to use different APIs
+- Use caching for the reader
+- Clean the cache (or proper caches) ones a write happens by the writer
+- Separate common module - contract and event tables should be not part of the migration together, ideally they should be used in different databases
+- Oracles should neever use the same DB, but if that would be the case create a new field for identifying the oracle for the events
+- Currently it works only with postgres - extend this if needed
 
 ## License
 
-The `dlc-storage` project is licensed under the [MIT license](LICENSE).
+The `dlc-storage` project is licensed under the [APM 2.0 license](LICENSE).
