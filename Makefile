@@ -1,4 +1,4 @@
-.PHONY: help test
+.PHONY: help
 
 help: ## Display this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \
