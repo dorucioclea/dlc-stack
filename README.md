@@ -1,6 +1,6 @@
 # dlc-stack
 
-![build workflow](https://github.com/github/docs/actions/workflows/docker-build.yml/badge.svg)
+![build workflow](https://github.com/dlc-link/dlc-stack/actions/workflows/docker-build.yml/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 It is composed of multiple modules that work together to provide a seamless lending experience for DLC.Link stack.
@@ -15,7 +15,7 @@ The `oracle` module is providing a numeric oracle implementation for bitcoin. (c
 
 The `oracle-discovery` module is responsible for discovering and registering oracles on the network. It provides an API for finding and connecting to available oracles.
 
-## Wallet backedn
+## Wallet backend
 The wallet module is responsible for communicating with the dlc-manager and oracle. It provides an API for creating and managing loan transactions.
 
 ### Storage-API
