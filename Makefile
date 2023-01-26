@@ -1,25 +1,21 @@
-build:
-	echo build
+.PHONY: help test
 
-docker-setup:
-	cd it && docker-compose up -d
+help: ## Display this help
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \
+	    \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ \
+	    { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } \
+	    /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-clean:
-	./it/scripts/stop-apps.sh; echo "Stopping apps if required ... "
-	cd it && docker-compose down; echo "Stopping containers if required ... "
+.DEFAULT_GOAL  := help
 
-integration-test: clean
-	cd it && docker-compose up -d
-	./it/scripts/start-apps.sh
+build: ## Cargo build
+	cargo build
+
+clean: ## Cargo clean
+	cargo clean
+
+integration-test: ## Run integration tests (docker env required)
 	cd it && cargo test
-	./it/scripts/stop-apps.sh
-	cd it && docker-compose down
 
-start-apps:
-	./it/scripts/start-apps.sh
-
-stop-apps:
-	./it/scripts/stop-apps.sh
-
-docker-build:
+docker-build: ## Cargo build
 	docker build -t dlc-link-stack:latest -f docker/Dockerfile .
