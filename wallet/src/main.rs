@@ -82,6 +82,7 @@ fn main() {
         env::var("BTC_RPC_URL").unwrap_or("localhost:18443/wallet/alice".to_string());
     let funded_url: String = env::var("FUNDED_URL")
         .unwrap_or("https://stacks-observer-mocknet.herokuapp.com/funded".to_string());
+    let wallet_backend_port: String = env::var("WALLET_BACKEND_PORT").unwrap_or("8085".to_string());
 
     let mut funded_uuids: Vec<String> = vec![];
 
@@ -118,7 +119,7 @@ fn main() {
         thread::sleep(Duration::from_millis(5000));
     });
 
-    rouille::start_server("0.0.0.0:8085", move |request| {
+    rouille::start_server(format!("0.0.0.0:{}", wallet_backend_port), move |request| {
         router!(request,
                 (GET) (/cleanup) => {
                     let contract_cleanup_enabled: bool = env::var("CONTRACT_CLEANUP_ENABLED")
