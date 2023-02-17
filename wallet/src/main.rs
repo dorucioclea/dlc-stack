@@ -274,6 +274,7 @@ fn check_close(
     }
     collected_response["closed_contracts"] = closed_contracts.into();
 
+    info!("check_close collected_response: {}", collected_response);
     Response::json(&collected_response)
 }
 
