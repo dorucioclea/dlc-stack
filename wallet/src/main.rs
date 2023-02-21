@@ -124,13 +124,13 @@ fn main() {
                 (GET) (/cleanup) => {
                     let contract_cleanup_enabled: bool = env::var("CONTRACT_CLEANUP_ENABLED")
                         .unwrap_or("false".to_string())
-                        .parse().unwrap();
+                        .parse().unwrap_or(false);
                     if contract_cleanup_enabled {
                         info!("Call cleanup contract offers.");
-                        delete_all_offers(manager.clone(), Response::empty_204())
+                        delete_all_offers(manager.clone(), Response::json(&("OK".to_string())).with_status_code(200))
                     } else {
                         info!("Call cleanup contract offers feature disabled.");
-                        Response::empty_400()
+                        Response::json(&("Disabled".to_string())).with_status_code(400)
                     }
                 },
                 (POST) (/offer) => {
@@ -238,10 +238,19 @@ fn check_close(
                     let res = client.post(&funded_url).json(&post_body).send();
 
                     match res {
-                        Ok(res) => {
-                            funded_uuids.push(uuid.clone());
-                            info!("Success setting funded to true: {}, {}", uuid, res.status());
-                        }
+                        Ok(res) => match res.error_for_status() {
+                            Ok(_res) => {
+                                funded_uuids.push(uuid.clone());
+                                info!(
+                                    "Success setting funded to true: {}, {}",
+                                    uuid,
+                                    _res.status()
+                                );
+                            }
+                            Err(e) => {
+                                info!("Error setting funded to true: {}: {}", uuid, e.to_string());
+                            }
+                        },
                         Err(e) => {
                             info!("Error setting funded to true: {}: {}", uuid, e.to_string());
                         }
