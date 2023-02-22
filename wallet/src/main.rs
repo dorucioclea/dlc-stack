@@ -337,10 +337,7 @@ fn create_new_offer(
 
     match &manager
         .lock()
-        .unwrap_or_else(|e| {
-            info!("--Recovering from poisoned thread in send_offer--");
-            e.into_inner()
-        })
+        .unwrap()
         .send_offer(&contract_input, COUNTER_PARTY_PK.parse().unwrap())
     {
         Ok(dlc) => {
@@ -365,16 +362,10 @@ fn create_new_offer(
 }
 
 fn accept_offer(accept_dlc: AcceptDlc, manager: Arc<Mutex<DlcManager>>) -> Response {
-    if let Some(Message::Sign(sign)) = match manager
-        .lock()
-        .unwrap_or_else(|e| {
-            info!("--Recovering from poisoned thread in accept_offer--");
-            e.into_inner()
-        })
-        .on_dlc_message(
-            &Message::Accept(accept_dlc),
-            COUNTER_PARTY_PK.parse().unwrap(),
-        ) {
+    if let Some(Message::Sign(sign)) = match manager.lock().unwrap().on_dlc_message(
+        &Message::Accept(accept_dlc),
+        COUNTER_PARTY_PK.parse().unwrap(),
+    ) {
         Ok(dlc) => dlc,
         Err(e) => {
             info!("DLC manager - accept offer error: {}", e.to_string());
