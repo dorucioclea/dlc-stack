@@ -6,6 +6,8 @@ services:
     ports:
       - "8085:8085"
     environment:
-      - "RUST_BACKTRACE=1"
+      - "RUST_BACKTRACE=full"
       - "RUST_LOG=debug"
       - "USE_SLED=$USE_SLED"
+      - "STORAGE_API_ENABLED=$STORAGE_API_ENABLED"
+      - "CONTRACT_CLEANUP_ENABLED=$CONTRACT_CLEANUP_ENABLED"
