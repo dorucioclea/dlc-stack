@@ -331,8 +331,8 @@ dependencies = [
 
 [[package]]
 name = "bitcoin-rpc-provider"
-version = "0.3.0"
-source = "git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix#0bbd601689fb53b2d4067596535f652a39788968"
+version = "0.1.0"
+source = "git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug#49de3a0c4720ed5353e783b5520f1e6863cc8d91"
 dependencies = [
  "bitcoin",
  "bitcoincore-rpc",
@@ -1036,7 +1036,7 @@ dependencies = [
 [[package]]
 name = "dlc"
 version = "0.3.0"
-source = "git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix#0bbd601689fb53b2d4067596535f652a39788968"
+source = "git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug#49de3a0c4720ed5353e783b5520f1e6863cc8d91"
 dependencies = [
  "bitcoin",
  "secp256k1-sys 0.4.1",
@@ -1073,10 +1073,10 @@ dependencies = [
  "bitcoincore-rpc",
  "bitcoincore-rpc-json",
  "chrono",
- "dlc 0.3.0 (git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix)",
+ "dlc 0.3.0 (git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug)",
  "dlc-clients",
  "dlc-manager",
- "dlc-messages 0.3.0 (git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix)",
+ "dlc-messages 0.3.0 (git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug)",
  "dlc-sled-storage-provider",
  "dlc-trie",
  "env_logger",
@@ -1097,12 +1097,12 @@ dependencies = [
 [[package]]
 name = "dlc-manager"
 version = "0.3.0"
-source = "git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix#0bbd601689fb53b2d4067596535f652a39788968"
+source = "git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug#49de3a0c4720ed5353e783b5520f1e6863cc8d91"
 dependencies = [
  "async-trait",
  "bitcoin",
- "dlc 0.3.0 (git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix)",
- "dlc-messages 0.3.0 (git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix)",
+ "dlc 0.3.0 (git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug)",
+ "dlc-messages 0.3.0 (git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug)",
  "dlc-trie",
  "lightning",
  "log",
@@ -1125,10 +1125,10 @@ dependencies = [
 [[package]]
 name = "dlc-messages"
 version = "0.3.0"
-source = "git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix#0bbd601689fb53b2d4067596535f652a39788968"
+source = "git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug#49de3a0c4720ed5353e783b5520f1e6863cc8d91"
 dependencies = [
  "bitcoin",
- "dlc 0.3.0 (git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix)",
+ "dlc 0.3.0 (git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug)",
  "lightning",
  "secp256k1-zkp 0.5.0",
  "serde",
@@ -1137,7 +1137,7 @@ dependencies = [
 [[package]]
 name = "dlc-sled-storage-provider"
 version = "0.1.0"
-source = "git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix#0bbd601689fb53b2d4067596535f652a39788968"
+source = "git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug#49de3a0c4720ed5353e783b5520f1e6863cc8d91"
 dependencies = [
  "dlc-manager",
  "sled",
@@ -1190,10 +1190,10 @@ dependencies = [
 [[package]]
 name = "dlc-trie"
 version = "0.3.0"
-source = "git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix#0bbd601689fb53b2d4067596535f652a39788968"
+source = "git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug#49de3a0c4720ed5353e783b5520f1e6863cc8d91"
 dependencies = [
  "bitcoin",
- "dlc 0.3.0 (git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix)",
+ "dlc 0.3.0 (git+https://github.com/p2pderivatives/rust-dlc?branch=fix/3.0.0-collateral-bug)",
  "secp256k1-zkp 0.5.0",
  "serde",
 ]
