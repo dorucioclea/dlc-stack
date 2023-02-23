@@ -116,7 +116,7 @@ fn main() {
             funded_url.clone(),
             &mut funded_uuids,
         );
-        thread::sleep(Duration::from_millis(5000));
+        thread::sleep(Duration::from_millis(10000));
     });
 
     rouille::start_server(format!("0.0.0.0:{}", wallet_backend_port), move |request| {
@@ -283,7 +283,7 @@ fn check_close(
     }
     collected_response["closed_contracts"] = closed_contracts.into();
 
-    info!("check_close collected_response: {}", collected_response);
+    debug!("check_close collected_response: {}", collected_response);
     Response::json(&collected_response)
 }
 

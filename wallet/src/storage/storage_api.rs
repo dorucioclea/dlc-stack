@@ -37,7 +37,6 @@ impl StorageApiProvider {
     }
 
     pub fn get_contracts_by_state(&self, state: String) -> Result<Vec<Contract>, Error> {
-        debug!("Get contracts by state - {}", state.clone());
         let contracts_res: Result<Vec<dlc_clients::Contract>, ApiError> = self
             .runtime
             .block_on(self.client.get_contracts_by_state(state.clone()));
