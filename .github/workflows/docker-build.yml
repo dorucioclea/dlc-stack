@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: Build Image
+    name: Build Images
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
@@ -20,7 +20,7 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
-    - name: Build, tag, and push image to Amazon ECR
+    - name: Build, tag, and push full image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: dlc-link-stack
@@ -28,4 +28,13 @@ jobs:
       run: |
         docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG || true
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f docker/Dockerfile .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    - name: Build, tag, and push wallet image to ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: dlc-protocol-wallet
+        IMAGE_TAG: latest
+      run: |
+        docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG || true
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f wallet/Dockerfile .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

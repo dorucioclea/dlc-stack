@@ -1065,36 +1065,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dlc-link-backend"
-version = "0.1.0"
-dependencies = [
- "base64",
- "bitcoin-rpc-provider",
- "bitcoincore-rpc",
- "bitcoincore-rpc-json",
- "chrono",
- "dlc 0.3.0 (git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix)",
- "dlc-clients",
- "dlc-manager",
- "dlc-messages 0.3.0 (git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix)",
- "dlc-sled-storage-provider",
- "dlc-trie",
- "env_logger",
- "hex",
- "lightning",
- "log",
- "mockito",
- "reqwest",
- "rouille",
- "secp256k1-zkp 0.5.0",
- "serde",
- "serde_json",
- "sled",
- "tokio",
- "warp",
-]
-
-[[package]]
 name = "dlc-manager"
 version = "0.3.0"
 source = "git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix#0bbd601689fb53b2d4067596535f652a39788968"
@@ -1132,6 +1102,36 @@ dependencies = [
  "lightning",
  "secp256k1-zkp 0.5.0",
  "serde",
+]
+
+[[package]]
+name = "dlc-protocol-wallet"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "bitcoin-rpc-provider",
+ "bitcoincore-rpc",
+ "bitcoincore-rpc-json",
+ "chrono",
+ "dlc 0.3.0 (git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix)",
+ "dlc-clients",
+ "dlc-manager",
+ "dlc-messages 0.3.0 (git+https://github.com/dlc-link/rust-dlc?branch=0.3.0-with-witness-fix)",
+ "dlc-sled-storage-provider",
+ "dlc-trie",
+ "env_logger",
+ "hex",
+ "lightning",
+ "log",
+ "mockito",
+ "reqwest",
+ "rouille",
+ "secp256k1-zkp 0.5.0",
+ "serde",
+ "serde_json",
+ "sled",
+ "tokio",
+ "warp",
 ]
 
 [[package]]

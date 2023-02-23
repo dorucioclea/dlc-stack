@@ -1,4 +1,4 @@
-# DLC-link-backend
+# DLC-protocol-wallet
 
 A test backend to:
 * generating offer messages for numerical contracts
