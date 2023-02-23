@@ -1,10 +1,10 @@
 [package]
 edition = "2021"
-name = "dlc-link-backend"
+name = "dlc-protocol-wallet"
 version = "0.1.0"
 
 [[bin]]
-name = "dlc-link-backend"
+name = "dlc-protocol-wallet"
 path = "src/main.rs"
 
 [dependencies]
