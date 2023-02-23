@@ -34,7 +34,12 @@ RPC_USER="devnet2"
 RPC_PASS="devnet2"
 STORAGE_API_ENABLED=true
 USE_SLED=false
+<<<<<<< Updated upstream
 DOCKER_REGISTRY_PREFIX=public.ecr.aws/dlc-link/
+=======
+FUNDED_URL="https://stacks-observer-mocknet.herokuapp.com/funded"
+DOCKER_PUBLIC_REGISTRY_PREFIX=public.ecr.aws/dlc-link/
+>>>>>>> Stashed changes
 ```
 
 Then run:
