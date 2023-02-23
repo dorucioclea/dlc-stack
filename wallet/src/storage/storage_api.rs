@@ -6,7 +6,7 @@ use dlc_manager::contract::signed_contract::SignedContract;
 use dlc_manager::contract::{Contract, PreClosedContract};
 use dlc_manager::error::Error;
 use dlc_manager::{ContractId, Storage};
-use log::{debug, info, warn};
+use log::{info, warn};
 use std::env;
 use tokio::runtime::Runtime;
 

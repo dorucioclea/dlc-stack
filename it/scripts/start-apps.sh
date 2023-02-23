@@ -71,7 +71,7 @@ else
   start_oracle
 fi
 
-wallet_app="dlc-link-backend"
+wallet_app="dlc-protocol-wallet"
 wallet_port="8085"
 wallet_pid_file="target/$wallet_app.pid"
 

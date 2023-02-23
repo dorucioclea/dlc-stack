@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wallet_app="dlc-link-backend"
+wallet_app="dlc-protocol-wallet"
 wallet_pid_file="target/$wallet_app.pid"
 
 if [[ -f $wallet_pid_file ]]; then
