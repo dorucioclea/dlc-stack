@@ -38,7 +38,6 @@ STORAGE_API_ENABLED=true
 STORAGE_API_ENDPOINT="https://dev-oracle.dlc.link/storage-api"
 USE_SLED=false
 FUNDED_URL="https://stacks-observer-mocknet.herokuapp.com/funded"
-DOCKER_REGISTRY_PREFIX=DOCKER_REGISTRY_PREFIX=123456789.dkr.ecr.us-east-1.amazonaws.com/
 DOCKER_PUBLIC_REGISTRY_PREFIX=public.ecr.aws/dlc-link/
 ```
 
