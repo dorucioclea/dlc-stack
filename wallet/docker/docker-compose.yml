@@ -1,13 +1,22 @@
 version: "3.9"
 services:
-  wallet-backend:
-    image: "${DOCKER_REGISTRY_PREFIX}prototype-wallet-backend:latest"
+  dlc-protocol-wallet:
+    image: "${DOCKER_PUBLIC_REGISTRY_PREFIX}dlc-protocol-wallet:latest"
     env_file: .env
+    hostname: dlc-protocol-wallet
+    container_name: dlc-protocol-wallet
+    entrypoint: "/app/dlc-protocol-wallet"
     ports:
       - "8085:8085"
     environment:
-      - "RUST_BACKTRACE=full"
-      - "RUST_LOG=debug"
+      - "RUST_BACKTRACE=$RUST_BACKTRACE"
+      - "RUST_LOG=$RUST_LOG"
       - "USE_SLED=$USE_SLED"
       - "STORAGE_API_ENABLED=$STORAGE_API_ENABLED"
+      - "STORAGE_API_ENDPOINT=$STORAGE_API_ENDPOINT"
       - "CONTRACT_CLEANUP_ENABLED=$CONTRACT_CLEANUP_ENABLED"
+      - "ORACLE_URL=$ORACLE_URL"
+      - "BTC_RPC_URL=$BTC_RPC_URL"
+      - "RPC_USER=$RPC_USER"
+      - "RPC_PASS=$RPC_PASS"
+      - "FUNDED_URL=$FUNDED_URL"
