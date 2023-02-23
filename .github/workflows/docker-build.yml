@@ -2,7 +2,7 @@ name: Build docker
 
 on:
   push:
-    branches: [ master , dev]
+    branches: [ master , dev, modify-docker-scripts-local-images]
 
 jobs:
   build:
